@@ -59,8 +59,14 @@ export default async function handler(req, res) {
 
   try {
     // Prepare headers - forward relevant headers from the request
+    // Add user-agent and other headers to bypass DDoS protection
     const headers = {
       'Content-Type': 'application/json',
+      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+      'Accept': 'application/json, text/plain, */*',
+      'Accept-Language': 'en-US,en;q=0.9',
+      'Origin': 'https://fitness-alive-gym-management.vercel.app',
+      'Referer': 'https://fitness-alive-gym-management.vercel.app/',
     };
     
     // Forward authorization if present
@@ -97,14 +103,30 @@ export default async function handler(req, res) {
     // Get response content type
     const contentType = response.headers.get('content-type') || '';
     
+    // Get response text first to check if it's HTML (DDoS protection)
+    const responseText = await response.text();
+    
+    // Check if response is HTML (DDoS protection page)
+    if (responseText.includes('<html') || responseText.includes('aes.js') || responseText.includes('DDoS')) {
+      return res.status(503).json({
+        error: 'API temporarily unavailable',
+        message: 'InfinityFree DDoS protection is blocking the request. Please try again in a few minutes or contact InfinityFree support.',
+        details: 'The API server is protected and may be blocking automated requests.'
+      });
+    }
+    
     // Handle JSON response
     if (contentType.includes('application/json')) {
-      const data = await response.json();
-      res.status(response.status).json(data);
+      try {
+        const data = JSON.parse(responseText);
+        res.status(response.status).json(data);
+      } catch (parseError) {
+        // If JSON parsing fails, return the text
+        res.status(response.status).send(responseText);
+      }
     } else {
       // Handle non-JSON responses
-      const text = await response.text();
-      res.status(response.status).send(text);
+      res.status(response.status).send(responseText);
     }
   } catch (error) {
     console.error('Proxy error:', error);
