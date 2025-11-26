@@ -14,28 +14,38 @@ export default async function handler(req, res) {
   }
 
   // Get the API endpoint path from query parameters
-  // Vercel catch-all routes: /api/[...path] -> path is in req.query.path as array
-  const pathParam = req.query.path;
+  // Vercel catch-all routes: /api/[...path] -> path is in req.query.path
+  // For /api/adminLogin.php, path will be ['adminLogin.php'] or 'adminLogin.php'
   let endpoint = '';
   
-  if (Array.isArray(pathParam)) {
-    endpoint = pathParam.join('/');
-  } else if (typeof pathParam === 'string') {
-    endpoint = pathParam;
+  // Try different ways to get the path
+  if (req.query.path) {
+    if (Array.isArray(req.query.path)) {
+      endpoint = req.query.path.join('/');
+    } else {
+      endpoint = req.query.path;
+    }
   }
   
-  // Remove leading slash if present
-  endpoint = endpoint.replace(/^\//, '');
+  // Fallback: extract from URL if path query param is missing
+  if (!endpoint && req.url) {
+    const urlMatch = req.url.match(/^\/api\/(.+)$/);
+    if (urlMatch) {
+      endpoint = urlMatch[1];
+    }
+  }
+  
+  // Clean up the endpoint
+  endpoint = endpoint.replace(/^\//, '').split('?')[0]; // Remove leading slash and query params
   
   if (!endpoint) {
     return res.status(400).json({ 
       error: 'API endpoint is required',
       debug: {
         query: req.query,
-        pathParam: pathParam,
-        pathType: typeof pathParam,
-        isArray: Array.isArray(pathParam),
-        url: req.url
+        url: req.url,
+        method: req.method,
+        headers: Object.keys(req.headers)
       }
     });
   }
@@ -54,11 +64,16 @@ export default async function handler(req, res) {
       headers['Authorization'] = req.headers.authorization;
     }
 
-    // Get request body
+    // Get request body - Vercel already parses JSON bodies
     let requestBody = null;
     if (req.method !== 'GET' && req.method !== 'HEAD') {
       if (req.body) {
-        requestBody = typeof req.body === 'string' ? req.body : JSON.stringify(req.body);
+        // If body is already a string, use it; otherwise stringify
+        if (typeof req.body === 'string') {
+          requestBody = req.body;
+        } else {
+          requestBody = JSON.stringify(req.body);
+        }
       }
     }
 
