@@ -13,39 +13,43 @@ export default async function handler(req, res) {
     return;
   }
 
-  // Get the API endpoint path from query parameters
-  // Vercel catch-all routes: /api/[...path] -> path is in req.query.path
-  // For /api/adminLogin.php, path will be ['adminLogin.php'] or 'adminLogin.php'
+  // Get the API endpoint path
+  // Vercel catch-all routes: /api/[...path] -> path is in req.query.path as array
+  // For /api/adminLogin.php, req.query.path should be ['adminLogin.php']
   let endpoint = '';
   
-  // Try different ways to get the path
+  // Method 1: Try req.query.path (Vercel catch-all format)
   if (req.query.path) {
     if (Array.isArray(req.query.path)) {
       endpoint = req.query.path.join('/');
-    } else {
+    } else if (typeof req.query.path === 'string') {
       endpoint = req.query.path;
     }
   }
   
-  // Fallback: extract from URL if path query param is missing
+  // Method 2: Extract from URL directly (fallback)
   if (!endpoint && req.url) {
-    const urlMatch = req.url.match(/^\/api\/(.+)$/);
-    if (urlMatch) {
-      endpoint = urlMatch[1];
+    // Remove query string and get path
+    const urlPath = req.url.split('?')[0];
+    // Extract everything after /api/
+    const match = urlPath.match(/^\/api\/(.+)$/);
+    if (match && match[1]) {
+      endpoint = match[1];
     }
   }
   
   // Clean up the endpoint
-  endpoint = endpoint.replace(/^\//, '').split('?')[0]; // Remove leading slash and query params
+  endpoint = endpoint.replace(/^\//, ''); // Remove leading slash
   
   if (!endpoint) {
     return res.status(400).json({ 
       error: 'API endpoint is required',
       debug: {
         query: req.query,
+        queryPath: req.query.path,
         url: req.url,
         method: req.method,
-        headers: Object.keys(req.headers)
+        endpoint: endpoint
       }
     });
   }
