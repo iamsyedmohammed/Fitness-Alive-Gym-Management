@@ -13,9 +13,9 @@ export default async function handler(req, res) {
     return;
   }
 
-  // Get the API endpoint path
+  // Get the API endpoint path from query parameters
   const { path } = req.query;
-  const endpoint = Array.isArray(path) ? path.join('/') : path || '';
+  const endpoint = Array.isArray(path) ? path.join('/') : (path || '');
   
   if (!endpoint) {
     return res.status(400).json({ error: 'API endpoint is required' });
@@ -25,7 +25,7 @@ export default async function handler(req, res) {
   const apiUrl = `https://fitnessalivegym-api.infinityfree.me/api/${endpoint}`;
 
   try {
-    // Prepare headers
+    // Prepare headers - forward relevant headers from the request
     const headers = {
       'Content-Type': 'application/json',
     };
@@ -35,6 +35,14 @@ export default async function handler(req, res) {
       headers['Authorization'] = req.headers.authorization;
     }
 
+    // Get request body
+    let requestBody = null;
+    if (req.method !== 'GET' && req.method !== 'HEAD') {
+      if (req.body) {
+        requestBody = typeof req.body === 'string' ? req.body : JSON.stringify(req.body);
+      }
+    }
+
     // Forward the request to InfinityFree API
     const fetchOptions = {
       method: req.method,
@@ -42,8 +50,8 @@ export default async function handler(req, res) {
     };
 
     // Add body for non-GET requests
-    if (req.method !== 'GET' && req.method !== 'HEAD' && req.body) {
-      fetchOptions.body = JSON.stringify(req.body);
+    if (requestBody) {
+      fetchOptions.body = requestBody;
     }
 
     const response = await fetch(apiUrl, fetchOptions);
