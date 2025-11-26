@@ -1,3 +1,9 @@
-# https://www.robotstxt.org/robotstxt.html
+# robots.txt for Fitness Alive Gym
+
 User-agent: *
-Disallow:
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+
+# Sitemap
+Sitemap: https://slateblue-turkey-331136.hostingersite.com/sitemap.xml

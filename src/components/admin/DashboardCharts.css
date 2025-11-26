@@ -1,0 +1,94 @@
+.chart-container {
+  background: white;
+  border-radius: 10px;
+  padding: 15px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  border: 2px solid #E5E5E5;
+  margin-bottom: 20px;
+  overflow: hidden;
+  width: 100%;
+  box-sizing: border-box;
+  position: relative;
+}
+
+.chart-header {
+  margin-bottom: 15px;
+}
+
+.chart-header h3 {
+  font-family: var(--font-primary);
+  font-size: 1rem;
+  font-weight: 700;
+  color: #000000;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.chart-wrapper {
+  height: 250px;
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  padding-bottom: 0;
+}
+
+.chart-wrapper canvas {
+  max-width: 100% !important;
+  max-height: 100% !important;
+}
+
+.chart-wrapper > div {
+  overflow: hidden !important;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+/* Specific styling for doughnut charts */
+.chart-container:has(.chart-wrapper canvas[data-chartjs-doughnut]) .chart-wrapper {
+  height: 280px;
+  padding-bottom: 20px;
+}
+
+/* Fallback for browsers without :has() support */
+.chart-container.doughnut-chart .chart-wrapper {
+  height: 280px;
+  padding-bottom: 20px;
+}
+
+.chart-summary-metrics {
+  display: flex;
+  gap: 30px;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #E5E5E5;
+}
+
+.summary-metric-item {
+  flex: 1;
+}
+
+.summary-metric-label {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #000000;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.summary-metric-value {
+  font-family: var(--font-primary);
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+
+.summary-metric-value.revenue {
+  color: #4CAF50;
+}
+
+.summary-metric-value.cost {
+  color: #FF9800;
+}
+

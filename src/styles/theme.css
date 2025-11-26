@@ -1,0 +1,74 @@
+/* GYM Management - Red & Black Color Theme */
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@300;400;500;600;700;800;900&family=Oswald:wght@400;500;600;700&display=swap');
+
+:root {
+  /* Fonts */
+  --font-primary: 'Bebas Neue', cursive;
+  --font-secondary: 'Oswald', sans-serif;
+  --font-body: 'Montserrat', sans-serif;
+  
+  /* Primary Colors - Actual Red & Black */
+  --color-primary: #DC2626;
+  --color-primary-dark: #B91C1C;
+  --color-primary-light: #EF4444;
+  --color-primary-hover: #991B1B;
+  
+  /* Black Colors */
+  --color-black: #000000;
+  --color-black-dark: #0A0A0A;
+  --color-black-light: #1A1A1A;
+  --color-black-soft: #2A2A2A;
+  
+  /* Accent Colors */
+  --color-accent: #FF0000;
+  --color-accent-gold: #F59E0B;
+  --color-accent-white: #FFFFFF;
+  
+  /* Background Colors */
+  --color-bg-light: #FAFAFA;
+  --color-bg-white: #FFFFFF;
+  --color-bg-dark: #000000;
+  --color-bg-darker: #0A0A0A;
+  --color-bg-gray: #1A1A1A;
+  
+  /* Text Colors */
+  --color-text-primary: #000000;
+  --color-text-secondary: #4A4A4A;
+  --color-text-light: #6B6B6B;
+  --color-text-white: #FFFFFF;
+  --color-text-red: #FF0000;
+  
+  /* Status Colors */
+  --color-success: #10B981;
+  --color-warning: #F59E0B;
+  --color-error: #FF0000;
+  --color-info: #3B82F6;
+  
+  /* Border and Divider */
+  --color-border: #E5E5E5;
+  --color-divider: #CCCCCC;
+  --color-border-dark: #2A2A2A;
+}
+
+/* Global Font Styles */
+body {
+  font-family: var(--font-body);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-primary);
+  font-weight: 400;
+  letter-spacing: 1px;
+}
+
+.display-font {
+  font-family: var(--font-primary);
+}
+
+.heading-font {
+  font-family: var(--font-secondary);
+}
+
+.body-font {
+  font-family: var(--font-body);
+}

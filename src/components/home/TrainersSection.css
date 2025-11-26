@@ -1,0 +1,130 @@
+@import '../../styles/theme.css';
+
+.trainers-section {
+  padding: 100px 5%;
+  background: #000000;
+  position: relative;
+}
+
+.trainers-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 30px;
+  margin-top: 50px;
+}
+
+.trainer-card {
+  background: linear-gradient(135deg, #1A1A1A 0%, #0F0F0F 100%);
+  border-radius: 15px;
+  border: 2px solid #2A2A2A;
+  overflow: hidden;
+  transition: all 0.4s ease;
+  text-align: center;
+}
+
+.trainer-card:hover {
+  border-color: #FF0000;
+  transform: translateY(-10px);
+  box-shadow: 0 15px 40px rgba(255, 0, 0, 0.3);
+}
+
+.trainer-image-wrapper {
+  width: 100%;
+  height: 300px;
+  background: linear-gradient(135deg, #2A2A2A 0%, #1A1A1A 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.trainer-image-wrapper::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(255, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.3) 100%);
+  z-index: 1;
+}
+
+.trainer-placeholder {
+  position: relative;
+  z-index: 2;
+  width: 120px;
+  height: 120px;
+  background: linear-gradient(135deg, #FF0000 0%, #CC0000 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 25px rgba(255, 0, 0, 0.4);
+}
+
+.trainer-icon {
+  font-size: 3rem;
+  color: #FFFFFF;
+}
+
+.trainer-card:hover .trainer-placeholder {
+  transform: scale(1.1);
+  box-shadow: 0 12px 35px rgba(255, 0, 0, 0.6);
+}
+
+.trainer-info {
+  padding: 30px 20px;
+}
+
+.trainer-name {
+  font-family: var(--font-secondary);
+  font-size: 1.3rem;
+  color: #FFFFFF;
+  margin: 0 0 10px 0;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-weight: 700;
+}
+
+.trainer-specialization {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin: 0;
+}
+
+@media (max-width: 968px) {
+  .trainers-section {
+    padding: 80px 5%;
+  }
+
+  .trainers-grid {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+  }
+
+  .trainer-image-wrapper {
+    height: 250px;
+  }
+
+  .trainer-placeholder {
+    width: 100px;
+    height: 100px;
+  }
+
+  .trainer-icon {
+    font-size: 2.5rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .trainers-section {
+    padding: 60px 5%;
+  }
+
+  .trainers-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
