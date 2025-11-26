@@ -61,6 +61,19 @@ h1, h2, h3, h4, h5, h6 {
   letter-spacing: 1px;
 }
 
+/* Ensure section titles are white on dark backgrounds */
+.section-title {
+  color: #FFFFFF !important;
+}
+
+h2.section-title {
+  color: #FFFFFF !important;
+}
+
+.section-header h2 {
+  color: #FFFFFF !important;
+}
+
 .display-font {
   font-family: var(--font-primary);
 }
