@@ -32,20 +32,23 @@ const AdminLoginPage = () => {
 
       // Check if response is ok
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        // Get error response text before throwing
+        const errorText = await response.text();
+        throw new Error(`HTTP error! status: ${response.status} - ${errorText.substring(0, 200)}`);
+      }
+
+      // Get response text once
+      const text = await response.text();
+      if (!text) {
+        throw new Error('Empty response from server');
       }
 
       // Try to parse JSON
       let data;
       try {
-        const text = await response.text();
-        if (!text) {
-          throw new Error('Empty response from server');
-        }
         data = JSON.parse(text);
       } catch (jsonErr) {
         // If JSON parsing fails, show the raw response
-        const text = await response.text();
         setError(`Server error: ${text.substring(0, 200)}`);
         return;
       }
