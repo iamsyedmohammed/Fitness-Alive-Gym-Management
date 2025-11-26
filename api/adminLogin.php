@@ -1,32 +1,47 @@
 <?php
-// Enable error reporting for debugging
+// Suppress all output and errors until we can handle them properly
 error_reporting(E_ALL);
 ini_set('display_errors', 0);
 ini_set('log_errors', 1);
 
-// Set CORS headers first, before any output
+// Start output buffering to catch any errors
+ob_start();
+
+// Set basic headers first
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
+header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With, Accept');
 
-// Handle preflight requests
+// Handle OPTIONS preflight
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    ob_end_clean();
     http_response_code(200);
     exit();
 }
 
-// Start output buffering to catch any errors
-ob_start();
+// Include config.php - it will set additional headers
+try {
+    require_once __DIR__ . '/config.php';
+} catch (Exception $e) {
+    ob_end_clean();
+    http_response_code(500);
+    echo json_encode([
+        'error' => 'Config error',
+        'message' => $e->getMessage()
+    ]);
+    exit();
+} catch (Error $e) {
+    ob_end_clean();
+    http_response_code(500);
+    echo json_encode([
+        'error' => 'Config fatal error',
+        'message' => $e->getMessage()
+    ]);
+    exit();
+}
 
 try {
-    // Check if config.php exists
-    if (!file_exists(__DIR__ . '/config.php')) {
-        throw new Exception('config.php file not found');
-    }
-    
-    require_once __DIR__ . '/config.php';
-    
     // Check if required functions exist
     if (!function_exists('getDBConnection')) {
         throw new Exception('getDBConnection function not found in config.php');
@@ -45,12 +60,11 @@ try {
         session_start();
     }
     
-    // Clear any output that might have been generated
-    ob_end_clean();
-    
 } catch (Exception $e) {
     ob_end_clean();
     http_response_code(500);
+    header('Content-Type: application/json');
+    header('Access-Control-Allow-Origin: *');
     echo json_encode([
         'error' => 'Configuration error',
         'message' => $e->getMessage(),
@@ -61,6 +75,8 @@ try {
 } catch (Error $e) {
     ob_end_clean();
     http_response_code(500);
+    header('Content-Type: application/json');
+    header('Access-Control-Allow-Origin: *');
     echo json_encode([
         'error' => 'Fatal error',
         'message' => $e->getMessage(),
