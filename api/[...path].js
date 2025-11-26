@@ -47,10 +47,19 @@ export default async function handler(req, res) {
     }
 
     const response = await fetch(apiUrl, fetchOptions);
-    const data = await response.json();
     
-    // Forward the response with original status code
-    res.status(response.status).json(data);
+    // Get response content type
+    const contentType = response.headers.get('content-type') || '';
+    
+    // Handle JSON response
+    if (contentType.includes('application/json')) {
+      const data = await response.json();
+      res.status(response.status).json(data);
+    } else {
+      // Handle non-JSON responses
+      const text = await response.text();
+      res.status(response.status).send(text);
+    }
   } catch (error) {
     console.error('Proxy error:', error);
     res.status(500).json({ 
