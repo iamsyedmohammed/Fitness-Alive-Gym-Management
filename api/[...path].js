@@ -14,11 +14,30 @@ export default async function handler(req, res) {
   }
 
   // Get the API endpoint path from query parameters
-  const { path } = req.query;
-  const endpoint = Array.isArray(path) ? path.join('/') : (path || '');
+  // Vercel catch-all routes: /api/[...path] -> path is in req.query.path as array
+  const pathParam = req.query.path;
+  let endpoint = '';
+  
+  if (Array.isArray(pathParam)) {
+    endpoint = pathParam.join('/');
+  } else if (typeof pathParam === 'string') {
+    endpoint = pathParam;
+  }
+  
+  // Remove leading slash if present
+  endpoint = endpoint.replace(/^\//, '');
   
   if (!endpoint) {
-    return res.status(400).json({ error: 'API endpoint is required' });
+    return res.status(400).json({ 
+      error: 'API endpoint is required',
+      debug: {
+        query: req.query,
+        pathParam: pathParam,
+        pathType: typeof pathParam,
+        isArray: Array.isArray(pathParam),
+        url: req.url
+      }
+    });
   }
 
   // Build the InfinityFree API URL
